@@ -689,7 +689,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"name\" : \"name\", \"description\" : \"description\", \"id\" : null, \"products\" : [ { \"image\" : [ \"\", \"\" ], \"size\" : \"S\", \"price\" : 0.6027456, \"imageContentType\" : \"imageContentType\", \"name\" : \"name\", \"description\" : \"description\", \"id\" : 0 }, { \"image\" : [ \"\", \"\" ], \"size\" : \"S\", \"price\" : 0.6027456, \"imageContentType\" : \"imageContentType\", \"name\" : \"name\", \"description\" : \"description\", \"id\" : 0 } ]}",
+							"raw": "{\r\n    \"name\": \"name\",\r\n    \"description\": \"description\",\r\n    \"id\": null,\r\n    \"products\": [\r\n        {\r\n            \"image\": [\r\n                \"\",\r\n                \"\"\r\n            ],\r\n            \"size\": \"S\",\r\n            \"price\": 0.6027456,\r\n            \"imageContentType\": \"imageContentType\",\r\n            \"name\": \"name\",\r\n            \"description\": \"description\",\r\n            \"id\": 0\r\n        },\r\n        {\r\n            \"image\": [\r\n                \"\",\r\n                \"\"\r\n            ],\r\n            \"size\": \"S\",\r\n            \"price\": 0.6027456,\r\n            \"imageContentType\": \"imageContentType\",\r\n            \"name\": \"name\",\r\n            \"description\": \"description\",\r\n            \"id\": 0\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -875,7 +875,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"name\" : \"name\", \"description\" : \"new_description\", \"id\" : null, \"products\" : []}",
+							"raw": "{ \"name\" : \"name\", \"description\" : \"new_description\", \"id\" : 1, \"products\" : []}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3526,7 +3526,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"quantity\": 200,\r\n    \"totalPrice\": 30.0,\r\n    \"status\": \"AVAILABLE\"\r\n}",
+							"raw": "{\r\n    \"id\": {{orderitemThree}},\r\n    \"quantity\": 200,\r\n    \"totalPrice\": 30.0,\r\n    \"status\": \"AVAILABLE\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3779,7 +3779,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"image\": [\r\n        \"\",\r\n        \"\"\r\n    ],\r\n    \"size\": \"M\",\r\n    \"price\": 20.5,\r\n    \"imageContentType\": \"productTwo imageContentType\",\r\n    \"name\": \"productTwo\",\r\n    \"description\": \"productTwo description\"\r\n}",
+							"raw": "{\r\n    \"image\": [\r\n        10,\r\n        20\r\n    ],\r\n    \"size\": \"M\",\r\n    \"price\": 20.5,\r\n    \"imageContentType\": \"productTwo imageContentType\",\r\n    \"name\": \"productTwo\",\r\n    \"description\": \"productTwo description\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4116,7 +4116,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"image\": [\r\n        \"\",\r\n        \"\"\r\n    ],\r\n    \"size\": \"S\",\r\n    \"price\": 11.11,\r\n    \"imageContentType\": \"productTwo NEW imageContentType\",\r\n    \"name\": \"productTwo NEW\",\r\n    \"description\": \"productTwo NEW description\"\r\n}",
+							"raw": "{\r\n    \"id\": {{productTwo}},\r\n    \"image\": [\r\n        \"\",\r\n        \"\"\r\n    ],\r\n    \"size\": \"S\",\r\n    \"price\": 11.11,\r\n    \"imageContentType\": \"productTwo NEW imageContentType\",\r\n    \"name\": \"productTwo NEW\",\r\n    \"description\": \"productTwo NEW description\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4246,6 +4246,372 @@
 							"port": "8080",
 							"path": [
 								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "31 - POST /productcategories-> 200 (categoryOne)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.globals.set(\"categoryOne\", jsonData[\"id\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"categoryOne\",\r\n    \"description\": \"categoryOne init description\",\r\n    \"products\": [\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/productcategories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"productcategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "32 - POST /productcategories-> 400 (id set)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData);\r",
+									"\r",
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"name\",\r\n    \"description\": \"description\",\r\n    \"id\": 1111,\r\n    \"products\": [\r\n     \r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/productcategories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"productcategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "33 - GET /productcategories{id }-> 200 (categoryOne)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"categoryOne\", function () {\r",
+									"    pm.expect(jsonData[\"id\"]).to.eql(pm.variables.get(\"categoryOne\"));\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/productcategories/{{categoryOne}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"productcategories",
+								"{{categoryOne}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "34 - PUT /productcategories-> 400 (no id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData);\r",
+									"\r",
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"name\",\r\n    \"description\": \"categoryOne NEW description\",\r\n    \"products\": [\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/productcategories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"productcategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "35 - PUT /productcategories-> 404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData);\r",
+									"\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1111,\r\n    \"name\": \"name\",\r\n    \"description\": \"categoryOne NEW description\",\r\n    \"products\": [\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/productcategories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"productcategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "36 - PUT /productcategories-> 200 (categoryOne - productOne)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const productOneID = pm.variables.get(\"productOne\").toString();\r",
+									"console.log(\"productOneID \" + productOneID);\r",
+									"\r",
+									"const apiurl = 'http://localhost:8080/products/' + productOneID\r",
+									"console.log(\"apiurl \" + apiurl);\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: apiurl,\r",
+									"    method: 'GET'\r",
+									"}, (err, res) => {\r",
+									"    if (err) {\r",
+									"        console.error(err);\r",
+									"    } else {\r",
+									"        if (res.code == 200) {\r",
+									"            const responseBody = res.json();\r",
+									"            const json = JSON.stringify(responseBody)\r",
+									"            console.debug(json);\r",
+									"            pm.environment.set('productOneJson', json);\r",
+									"        } else {\r",
+									"            console.error(\"error\");\r",
+									"        }\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"console.log(pm.variables.get(\"productOneJson\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"name\",\r\n    \"description\": \"description\",\r\n    \"id\": {{categoryOne}},\r\n    \"products\": [\r\n        {\r\n            \"image\": [\r\n                \"\",\r\n                \"\"\r\n            ],\r\n            \"size\": \"S\",\r\n            \"price\": 0.6027456,\r\n            \"imageContentType\": \"imageContentType\",\r\n            \"name\": \"name\",\r\n            \"description\": \"description\",\r\n            \"id\": {{productOne}}\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/productcategories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"productcategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "37 - GET /productcategories{id }-> 200 (categoryOne)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"categoryOne\", function () {\r",
+									"    pm.expect(jsonData[\"id\"]).to.eql(pm.variables.get(\"categoryOne\"));\r",
+									"    pm.expect(jsonData[\"products\"]).to.be.an(\"array\").with.lengthOf(1);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/productcategories/{{categoryOne}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"productcategories",
+								"{{categoryOne}}"
 							]
 						}
 					},
