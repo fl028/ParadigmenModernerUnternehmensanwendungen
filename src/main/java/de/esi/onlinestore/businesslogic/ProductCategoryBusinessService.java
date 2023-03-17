@@ -1,12 +1,10 @@
 package de.esi.onlinestore.businesslogic;
 
-import de.esi.onlinestore.domain.Customer;
 import de.esi.onlinestore.domain.Product;
 import de.esi.onlinestore.domain.ProductCategory;
 import de.esi.onlinestore.exceptions.BadRequestException;
 import de.esi.onlinestore.exceptions.ResourceNotFoundException;
 import de.esi.onlinestore.service.ProductCategoryService;
-import de.esi.onlinestore.service.ProductService;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,13 +43,16 @@ public class ProductCategoryBusinessService {
             throw new BadRequestException(message);
         }
 
-        //update products before creating
+        setCategory(productCategory, productBusinessService);
+
+        return productCategoryService.save(productCategory);
+    }
+
+    private void setCategory(ProductCategory productCategory, ProductBusinessService productBusinessService) throws BadRequestException, ResourceNotFoundException {
         for (Product product : productCategory.getProducts()) {
             product.setProductCategory(productCategory);
             productBusinessService.update(product.getId(),product);
         }
-
-        return productCategoryService.save(productCategory);
     }
 
     public ProductCategory update(Long id, ProductCategory productCategory) throws BadRequestException, ResourceNotFoundException {
@@ -64,11 +65,7 @@ public class ProductCategoryBusinessService {
         if(searchProductCategory.isPresent()) {
             productCategory.setId(id);
 
-            //update products before updating
-            for (Product product : productCategory.getProducts()) {
-                product.setProductCategory(productCategory);
-                productBusinessService.update(product.getId(),product);
-            }
+            setCategory(productCategory, productBusinessService);
 
             return productCategoryService.save(productCategory);
         }

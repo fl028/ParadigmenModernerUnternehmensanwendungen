@@ -1,11 +1,13 @@
 package de.esi.onlinestore.businesslogic;
 
 import de.esi.onlinestore.domain.OrderItem;
+import de.esi.onlinestore.domain.Product;
 import de.esi.onlinestore.domain.ProductOrder;
 import de.esi.onlinestore.exceptions.BadRequestException;
 import de.esi.onlinestore.exceptions.ResourceNotFoundException;
 import de.esi.onlinestore.exceptions.TotalPriceTooLowException;
 import de.esi.onlinestore.service.ProductOrderService;
+import org.hibernate.criterion.Order;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,8 +18,11 @@ public class ProductOrderBusinessService {
 
     private final ProductOrderService productOrderService;
 
-    public ProductOrderBusinessService(ProductOrderService productOrderService) {
+    private final OrderItemBusinessService orderItemBusinessService;
+
+    public ProductOrderBusinessService(ProductOrderService productOrderService,OrderItemBusinessService orderItemBusinessService) {
         this.productOrderService = productOrderService;
+        this.orderItemBusinessService = orderItemBusinessService;
     }
 
     public List<ProductOrder> getAll() {
@@ -34,7 +39,7 @@ public class ProductOrderBusinessService {
         }
     }
 
-    public ProductOrder create(ProductOrder productorder) throws BadRequestException, TotalPriceTooLowException {
+    public ProductOrder create(ProductOrder productorder) throws BadRequestException, TotalPriceTooLowException, ResourceNotFoundException {
 
         if (productorder.getId() != null) {
             String message = "Invalid  " + ENTITY_NAME + " id";
@@ -58,7 +63,10 @@ public class ProductOrderBusinessService {
             throw new TotalPriceTooLowException(message);
         }
 
-        return productOrderService.save(productorder);
+        ProductOrder productOrder = productOrderService.save(productorder);
+        setOrder(productorder, orderItemBusinessService);
+
+        return productOrder;
     }
 
     public ProductOrder update(Long id, ProductOrder productorder) throws BadRequestException, ResourceNotFoundException {
@@ -70,10 +78,19 @@ public class ProductOrderBusinessService {
         Optional<ProductOrder> searchProductOrder = productOrderService.findOne(id);
         if(searchProductOrder.isPresent()) {
             productorder.setId(id);
-            return productOrderService.save(productorder);
+            ProductOrder productOrder = productOrderService.save(productorder);
+            setOrder(productorder, orderItemBusinessService);
+            return productOrder;
         }
         else{
             throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + productorder.getId());
+        }
+    }
+
+    private void setOrder(ProductOrder productorder, OrderItemBusinessService orderItemBusinessService) throws BadRequestException, ResourceNotFoundException {
+        for (OrderItem orderItem : productorder.getOrderItems()) {
+            orderItem.setOrder(productorder);
+            orderItemBusinessService.update(orderItem.getId(),orderItem);
         }
     }
 

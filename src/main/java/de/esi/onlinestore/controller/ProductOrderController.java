@@ -1,10 +1,12 @@
 package de.esi.onlinestore.controller;
 
+import de.esi.onlinestore.businesslogic.OrderItemBusinessService;
 import de.esi.onlinestore.businesslogic.ProductOrderBusinessService;
 import de.esi.onlinestore.domain.ProductOrder;
 import de.esi.onlinestore.exceptions.BadRequestException;
 import de.esi.onlinestore.exceptions.ResourceNotFoundException;
 import de.esi.onlinestore.exceptions.TotalPriceTooLowException;
+import de.esi.onlinestore.service.OrderItemService;
 import de.esi.onlinestore.service.ProductOrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +20,8 @@ public class ProductOrderController {
 
     private final ProductOrderBusinessService productOrderBusinessService;
 
-    public ProductOrderController(ProductOrderService productOrderService) {
-        this.productOrderBusinessService = new ProductOrderBusinessService(productOrderService);
+    public ProductOrderController(ProductOrderService productOrderService, OrderItemService orderItemService) {
+        this.productOrderBusinessService = new ProductOrderBusinessService(productOrderService,new OrderItemBusinessService(orderItemService));
     }
 
 
@@ -29,7 +31,7 @@ public class ProductOrderController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductOrder> createProductOrder(@RequestBody ProductOrder productorder) throws BadRequestException,TotalPriceTooLowException {
+    public ResponseEntity<ProductOrder> createProductOrder(@RequestBody ProductOrder productorder) throws BadRequestException, TotalPriceTooLowException, ResourceNotFoundException {
         return ResponseEntity.ok(productOrderBusinessService.create(productorder));
     }
 
