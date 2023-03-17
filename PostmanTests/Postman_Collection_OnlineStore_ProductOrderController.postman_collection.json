@@ -1,0 +1,654 @@
+{
+	"info": {
+		"_postman_id": "73c946f1-8745-401a-ad94-0416a40ddc63",
+		"name": "Postman_Collection_OnlineStore_ProductOrderController",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1 - GET /productorders-> 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"console.log(jsonData);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/productorders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4 - GET /productorders/{id} -> 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"console.log(jsonData);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/productorders/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "13 - DELETE /productorders/{id} -> 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/productorders/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "14 - DELETE /productorders/{id} -> 404 (not found)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/productorders/0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders",
+						"0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2 - GET /productorders/{id} -> 404 (not found)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"console.log(jsonData);\r",
+							"\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/productorders/0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders",
+						"0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3 - POST /productorders-> 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"console.log(jsonData);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": null,\r\n    \"placedDate\": null,\r\n    \"orderItems\": [\r\n        {\r\n            \"quantity\": 1,\r\n            \"totalPrice\": 500.0,\r\n            \"id\": 6,\r\n            \"status\": \"AVAILABLE\"\r\n        },\r\n        {\r\n            \"quantity\": 1,\r\n            \"totalPrice\": 100.0,\r\n            \"id\": 6,\r\n            \"status\": \"AVAILABLE\"\r\n        }\r\n    ],\r\n    \"status\": \"PENDING\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/productorders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8 - PUT /productorders-> 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"console.log(jsonData);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"placedDate\": null,\r\n    \"orderItems\": [\r\n        {\r\n            \"quantity\": 1,\r\n            \"totalPrice\": 700.0,\r\n            \"id\": null,\r\n            \"status\": \"AVAILABLE\"\r\n        },\r\n        {\r\n            \"quantity\": 1,\r\n            \"totalPrice\": 700.0,\r\n            \"id\": null,\r\n            \"status\": \"AVAILABLE\"\r\n        }\r\n    ],\r\n    \"status\": \"PENDING\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/productorders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "9 - PUT /productorders/{id} -> 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"console.log(jsonData);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"placedDate\": null,\r\n    \"orderItems\": [\r\n        {\r\n            \"quantity\": 1,\r\n            \"totalPrice\": 700.0,\r\n            \"id\": null,\r\n            \"status\": \"AVAILABLE\"\r\n        },\r\n        {\r\n            \"quantity\": 1,\r\n            \"totalPrice\": 700.0,\r\n            \"id\": null,\r\n            \"status\": \"AVAILABLE\"\r\n        }\r\n    ],\r\n    \"status\": \"PENDING\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/productorders/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10 - PUT /productorders-> 400 (invalid id)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"console.log(jsonData);\r",
+							"\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"id\" : null, \"placedDate\" : \"2000-01-23T04:56:07.000+00:00\", \"orderItems\" : [ { \"quantity\" : 0, \"totalPrice\" : 5.962134, \"id\" : 6, \"status\" : \"AVAILABLE\" }, { \"quantity\" : 0, \"totalPrice\" : 5.962134, \"id\" : 6, \"status\" : \"AVAILABLE\" } ], \"status\" : \"COMPLETED\", \"customer\" : { \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"id\" : 5, \"email\" : \"email\" }}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/productorders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11 - PUT /productorders/{id} -> 404 (not found)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"console.log(jsonData);\r",
+							"\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"id\" : 0, \"placedDate\" : \"2000-01-23T04:56:07.000+00:00\", \"orderItems\" : [ { \"quantity\" : 0, \"totalPrice\" : 5.962134, \"id\" : 6, \"status\" : \"AVAILABLE\" }, { \"quantity\" : 0, \"totalPrice\" : 5.962134, \"id\" : 6, \"status\" : \"AVAILABLE\" } ], \"status\" : \"COMPLETED\", \"customer\" : { \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"id\" : 5, \"email\" : \"email\" }}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/productorders/0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders",
+						"0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12 - PUT /productorders-> 404 (not found)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"console.log(jsonData);\r",
+							"\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"id\" : 0, \"placedDate\" : \"2000-01-23T04:56:07.000+00:00\", \"orderItems\" : [ { \"quantity\" : 0, \"totalPrice\" : 5.962134, \"id\" : 6, \"status\" : \"AVAILABLE\" }, { \"quantity\" : 0, \"totalPrice\" : 5.962134, \"id\" : 6, \"status\" : \"AVAILABLE\" } ], \"status\" : \"COMPLETED\", \"customer\" : { \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"id\" : 5, \"email\" : \"email\" }}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/productorders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5 - POST /productorders-> 400 (id is set)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"console.log(jsonData);\r",
+							"\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 0,\r\n    \"placedDate\": \"2000-01-23T04:56:07.000+00:00\",\r\n    \"orderItems\": [\r\n        {\r\n            \"quantity\": 1,\r\n            \"totalPrice\": 500.0,\r\n            \"id\": 6,\r\n            \"status\": \"AVAILABLE\"\r\n        },\r\n        {\r\n            \"quantity\": 1,\r\n            \"totalPrice\": 100.0,\r\n            \"id\": 6,\r\n            \"status\": \"AVAILABLE\"\r\n        }\r\n    ],\r\n    \"status\": \"COMPLETED\",\r\n    \"customer\": {\r\n        \"firstName\": \"firstName\",\r\n        \"lastName\": \"lastName\",\r\n        \"id\": 5,\r\n        \"email\": \"email\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/productorders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7 - POST /productorders-> 422 (no basket value > 100)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"console.log(jsonData);\r",
+							"\r",
+							"pm.test(\"Status code is 422\", function () {\r",
+							"    pm.response.to.have.status(422);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": null,\r\n    \"placedDate\": \"2000-01-23T04:56:07.000+00:00\",\r\n    \"orderItems\": [\r\n        {\r\n            \"quantity\": 1,\r\n            \"totalPrice\": 50.0,\r\n            \"id\": 6,\r\n            \"status\": \"AVAILABLE\"\r\n        },\r\n        {\r\n            \"quantity\": 1,\r\n            \"totalPrice\": 10.0,\r\n            \"id\": 6,\r\n            \"status\": \"AVAILABLE\"\r\n        }\r\n    ],\r\n    \"status\": \"COMPLETED\",\r\n    \"customer\": {\r\n        \"firstName\": \"firstName\",\r\n        \"lastName\": \"lastName\",\r\n        \"id\": 5,\r\n        \"email\": \"email\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/productorders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6 - POST /productorders-> 400 (no order item)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"console.log(jsonData);\r",
+							"\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": null,\r\n    \"placedDate\": \"2000-01-23T04:56:07.000+00:00\",\r\n    \"orderItems\": [\r\n    ],\r\n    \"status\": \"COMPLETED\",\r\n    \"customer\": {\r\n        \"firstName\": \"firstName\",\r\n        \"lastName\": \"lastName\",\r\n        \"id\": 5,\r\n        \"email\": \"email\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/productorders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"productorders"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
