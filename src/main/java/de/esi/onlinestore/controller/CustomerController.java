@@ -2,6 +2,7 @@ package de.esi.onlinestore.controller;
 
 import de.esi.onlinestore.domain.Customer;
 import de.esi.onlinestore.exceptions.BadRequestException;
+import de.esi.onlinestore.exceptions.DuplicateEmailException;
 import de.esi.onlinestore.exceptions.ResourceNotFoundException;
 import de.esi.onlinestore.service.CustomerService;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ public class CustomerController {
 
     // 2. Neuen Kunden erstellen POST /customers
     @PostMapping
-    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) throws BadRequestException {
+    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) throws BadRequestException, DuplicateEmailException {
         if (customer.getId() != null) {
 
             String message = "A new customer cannot already have an ID: " + ENTITY_NAME;
@@ -45,7 +46,7 @@ public class CustomerController {
         // check if email is unique
         if (isEmailUnique(customer.getEmail()) == false){
             String message = "Email is not unique: " + ENTITY_NAME;
-            throw new BadRequestException(message);
+            throw new DuplicateEmailException(message);
         }
 
         Customer result = customerService.save(customer);
