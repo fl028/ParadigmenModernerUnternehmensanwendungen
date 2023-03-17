@@ -1,6 +1,7 @@
 package de.esi.onlinestore.controller;
 
 import de.esi.onlinestore.businesslogic.CustomerBusinessService;
+import de.esi.onlinestore.businesslogic.ProductBusinessService;
 import de.esi.onlinestore.businesslogic.ProductCategoryBusinessService;
 import de.esi.onlinestore.domain.OrderItem;
 import de.esi.onlinestore.domain.ProductCategory;
@@ -23,8 +24,9 @@ public class ProductCategoryController {
 
     private final ProductCategoryBusinessService productCategoryBusinessService;
 
-    public ProductCategoryController(ProductCategoryService productCategoryService) {
-        this.productCategoryBusinessService = new ProductCategoryBusinessService(productCategoryService);
+    public ProductCategoryController(ProductCategoryService productCategoryService,ProductService productService) {
+
+        this.productCategoryBusinessService = new ProductCategoryBusinessService(productCategoryService,new ProductBusinessService(productService));
     }
 
     @GetMapping
@@ -33,7 +35,7 @@ public class ProductCategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductCategory> createProductCategory(@RequestBody ProductCategory productcategory) throws BadRequestException {
+    public ResponseEntity<ProductCategory> createProductCategory(@RequestBody ProductCategory productcategory) throws BadRequestException, ResourceNotFoundException {
         return ResponseEntity.ok(productCategoryBusinessService.create(productcategory));
     }
 

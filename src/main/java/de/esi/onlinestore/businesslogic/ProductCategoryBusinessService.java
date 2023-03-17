@@ -1,9 +1,12 @@
 package de.esi.onlinestore.businesslogic;
 
+import de.esi.onlinestore.domain.Customer;
+import de.esi.onlinestore.domain.Product;
 import de.esi.onlinestore.domain.ProductCategory;
 import de.esi.onlinestore.exceptions.BadRequestException;
 import de.esi.onlinestore.exceptions.ResourceNotFoundException;
 import de.esi.onlinestore.service.ProductCategoryService;
+import de.esi.onlinestore.service.ProductService;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +17,12 @@ public class ProductCategoryBusinessService {
 
     private final ProductCategoryService productCategoryService;
 
-    public ProductCategoryBusinessService(ProductCategoryService productCategoryService) {
+    private final ProductBusinessService productBusinessService;
+
+
+    public ProductCategoryBusinessService(ProductCategoryService productCategoryService,ProductBusinessService productBusinessService) {
         this.productCategoryService = productCategoryService;
+        this.productBusinessService = productBusinessService;
     }
 
     public List<ProductCategory> getAll() {
@@ -32,10 +39,16 @@ public class ProductCategoryBusinessService {
         }
     }
 
-    public ProductCategory create(ProductCategory productCategory) throws BadRequestException {
+    public ProductCategory create(ProductCategory productCategory) throws BadRequestException, ResourceNotFoundException {
         if (productCategory.getId() != null) {
             String message = "Invalid  " + ENTITY_NAME + " id";
             throw new BadRequestException(message);
+        }
+
+        //update products before creating
+        for (Product product : productCategory.getProducts()) {
+            product.setProductCategory(productCategory);
+            productBusinessService.update(product.getId(),product);
         }
 
         return productCategoryService.save(productCategory);
@@ -50,6 +63,13 @@ public class ProductCategoryBusinessService {
         Optional<ProductCategory> searchProductCategory = productCategoryService.findOne(id);
         if(searchProductCategory.isPresent()) {
             productCategory.setId(id);
+
+            //update products before updating
+            for (Product product : productCategory.getProducts()) {
+                product.setProductCategory(productCategory);
+                productBusinessService.update(product.getId(),product);
+            }
+
             return productCategoryService.save(productCategory);
         }
         else{
