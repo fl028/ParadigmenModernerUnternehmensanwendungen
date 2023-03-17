@@ -3,6 +3,7 @@
 
 ## online store 
 - Java Spring Boot REST API
+- http://localhost:8080/entity
 
 ## entities
 - Customer
@@ -13,3 +14,7 @@
 
 ## tests
 - the api tests were realised with a postman collection
+
+## database
+- use local h2 db 
+- see http://localhost:8080/h2-console
