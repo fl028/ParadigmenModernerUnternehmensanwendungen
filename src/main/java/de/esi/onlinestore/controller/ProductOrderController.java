@@ -25,23 +25,21 @@ public class ProductOrderController {
         this.productOrderService = productOrderService;
     }
 
-    // 1. Liste aller Bestellungen aufrufen GET /productorders
     @GetMapping
     public ResponseEntity<List<ProductOrder>> getAllproductorders() {
         List<ProductOrder> result= productOrderService.findAll();
         return ResponseEntity.ok(result);
     }
 
-    // 2. Neue Bestellung erstellen POST /productorders
     @PostMapping
     public ResponseEntity<ProductOrder> createProductOrder(@RequestBody ProductOrder productorder) throws BadRequestException,TotalPriceTooLowException {
         if (productorder.getId() != null) {
-            String message = "A new productorder already have an ID: " + ENTITY_NAME;
+            String message = "Invalid  " + ENTITY_NAME + " id";
             throw new BadRequestException(message);
         }
 
         if(productorder.getOrderItems().size() < 1){
-            String message = "A new productorder requires a order item: " + ENTITY_NAME;
+            String message = "A new " + ENTITY_NAME + " requires a order item";
             throw new BadRequestException(message);
         }
 
@@ -53,7 +51,7 @@ public class ProductOrderController {
 
         //check basket value
         if(productOrderTotalPrice < 100){
-            String message = "The productorder requires a order value of 100 but current value is "+ Float.toString(productOrderTotalPrice) +": " + ENTITY_NAME;
+            String message = "The " + ENTITY_NAME + "  requires a order value of 100 but current value is "+ Float.toString(productOrderTotalPrice) +": " + ENTITY_NAME;
             throw new TotalPriceTooLowException(message);
         }
 
@@ -61,7 +59,6 @@ public class ProductOrderController {
         return ResponseEntity.ok(result);
     }
 
-    // 3. Bestellung aufrufen (Parameter: Id) GET /productorders /{id}
     @GetMapping("/{id}")
     public ResponseEntity<ProductOrder> getProductOrder(@PathVariable Long id) throws ResourceNotFoundException {
         Optional<ProductOrder> searchProductOrder = productOrderService.findOne(id);
@@ -69,11 +66,10 @@ public class ProductOrderController {
             return ResponseEntity.ok(searchProductOrder.get());
         }
         else{
-            throw new ResourceNotFoundException("No productorder with id: " + id);
+            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + id);
         }
     }
 
-    // 4. Bestellung überschreiben (Parameter: Id) PUT /productorders /{id}
     @PutMapping("/{id}")
     public ResponseEntity<ProductOrder> updateProductOrder(@PathVariable(value = "id") Long id,@Valid @RequestBody  ProductOrder productorder) throws BadRequestException,ResourceNotFoundException,InternalError {
         Optional<ProductOrder> searchProductOrder = productOrderService.findOne(id);
@@ -82,15 +78,14 @@ public class ProductOrderController {
             return ResponseEntity.ok(result);
         }
         else{
-            throw new ResourceNotFoundException("No productorder with id: " + productorder.getId());
+            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + productorder.getId());
         }
     }
 
-    // 5.Bestellung überschreiben (Parameter: Instanz von ProductOrder mit aktuellen Werten) PUT /productorders
     @PutMapping
     public ResponseEntity<ProductOrder> updateProductOrderById(@RequestBody  ProductOrder productorder) throws  BadRequestException,ResourceNotFoundException,InternalError {
         if (productorder.getId() == null) {
-            String message = "Invalid id: " + ENTITY_NAME;
+            String message = "Invalid  " + ENTITY_NAME + " id";
             throw new BadRequestException(message);
         }
 
@@ -100,11 +95,10 @@ public class ProductOrderController {
             return ResponseEntity.ok(result);
         }
         else{
-            throw new ResourceNotFoundException("No productorder with id: " + productorder.getId());
+            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + productorder.getId());
         }
     }
 
-    // 6. Bestellung löschen (Parameter: Id) DELETE / productorders /{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProductOrder(@PathVariable Long id)  throws ResourceNotFoundException {
         Optional<ProductOrder> searchProductOrder  = productOrderService.findOne(id);
@@ -113,7 +107,7 @@ public class ProductOrderController {
             return ResponseEntity.noContent().build();
         }
         else{
-            throw new ResourceNotFoundException("No productorder with id: " + id);
+            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + id);
         }
     }
 }
