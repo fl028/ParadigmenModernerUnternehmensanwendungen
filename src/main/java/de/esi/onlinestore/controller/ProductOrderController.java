@@ -1,6 +1,6 @@
 package de.esi.onlinestore.controller;
 
-import de.esi.onlinestore.domain.OrderItem;
+import de.esi.onlinestore.businesslogic.ProductOrderBusinessService;
 import de.esi.onlinestore.domain.ProductOrder;
 import de.esi.onlinestore.exceptions.BadRequestException;
 import de.esi.onlinestore.exceptions.ResourceNotFoundException;
@@ -11,108 +11,46 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/productorders")
 public class ProductOrderController {
 
-    private final String ENTITY_NAME = "ProductOrder";
-
-    private final ProductOrderService productOrderService;
+    private final ProductOrderBusinessService productOrderBusinessService;
 
     public ProductOrderController(ProductOrderService productOrderService) {
-        this.productOrderService = productOrderService;
+        this.productOrderBusinessService = new ProductOrderBusinessService(productOrderService);
     }
+
 
     @GetMapping
     public ResponseEntity<List<ProductOrder>> getAllproductorders() {
-        List<ProductOrder> result= productOrderService.findAll();
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(productOrderBusinessService.getAll());
     }
 
     @PostMapping
     public ResponseEntity<ProductOrder> createProductOrder(@RequestBody ProductOrder productorder) throws BadRequestException,TotalPriceTooLowException {
-        if (productorder.getId() != null) {
-            String message = "Invalid  " + ENTITY_NAME + " id";
-            throw new BadRequestException(message);
-        }
-
-        if(productorder.getOrderItems().size() < 1){
-            String message = "A new " + ENTITY_NAME + " requires a order item";
-            throw new BadRequestException(message);
-        }
-
-        //calculate total price of product order
-        float productOrderTotalPrice = 0;
-        for (OrderItem orderItem : productorder.getOrderItems()) {
-            productOrderTotalPrice += orderItem.getTotalPrice();
-        }
-
-        //check basket value
-        if(productOrderTotalPrice < 100){
-            String message = "The " + ENTITY_NAME + "  requires a order value of 100 but current value is "+ Float.toString(productOrderTotalPrice) +": " + ENTITY_NAME;
-            throw new TotalPriceTooLowException(message);
-        }
-
-        ProductOrder result = productOrderService.save(productorder);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(productOrderBusinessService.create(productorder));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductOrder> getProductOrder(@PathVariable Long id) throws ResourceNotFoundException {
-        Optional<ProductOrder> searchProductOrder = productOrderService.findOne(id);
-        if(searchProductOrder.isPresent()) {
-            return ResponseEntity.ok(searchProductOrder.get());
-        }
-        else{
-            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + id);
-        }
+        return ResponseEntity.ok(productOrderBusinessService.getOne(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductOrder> updateProductOrder(@PathVariable(value = "id") Long id,@Valid @RequestBody  ProductOrder productorder) throws BadRequestException,ResourceNotFoundException,InternalError {
-        Optional<ProductOrder> searchProductOrder = productOrderService.findOne(id);
-        if(searchProductOrder.isPresent()) {
-            productorder.setId(id);
-            ProductOrder result = productOrderService.save(productorder);
-            return ResponseEntity.ok(result);
-        }
-        else{
-            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + productorder.getId());
-        }
+        return ResponseEntity.ok(productOrderBusinessService.update(id,productorder));
     }
 
     @PutMapping
     public ResponseEntity<ProductOrder> updateProductOrderById(@RequestBody  ProductOrder productorder) throws  BadRequestException,ResourceNotFoundException,InternalError {
-        if (productorder.getId() == null) {
-            String message = "Invalid  " + ENTITY_NAME + " id";
-            throw new BadRequestException(message);
-        }
-
-        Optional<ProductOrder> searchProductOrder = productOrderService.findOne(productorder.getId());
-        if(searchProductOrder.isPresent()) {
-            try {
-                ProductOrder result = productOrderService.save(productorder);
-                return ResponseEntity.ok(result);
-            } catch (Exception e) {
-                throw new InternalError();
-            }
-        }
-        else{
-            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + productorder.getId());
-        }
+        return ResponseEntity.ok(productOrderBusinessService.update(productorder.getId(),productorder));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProductOrder(@PathVariable Long id)  throws ResourceNotFoundException {
-        Optional<ProductOrder> searchProductOrder  = productOrderService.findOne(id);
-        if(searchProductOrder.isPresent()) {
-            productOrderService.delete(id);
-            return ResponseEntity.noContent().build();
-        }
-        else{
-            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + id);
-        }
+        productOrderBusinessService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

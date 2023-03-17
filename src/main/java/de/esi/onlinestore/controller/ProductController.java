@@ -1,5 +1,6 @@
 package de.esi.onlinestore.controller;
 
+import de.esi.onlinestore.businesslogic.ProductBusinessService;
 import de.esi.onlinestore.domain.Product;
 import de.esi.onlinestore.exceptions.BadRequestException;
 import de.esi.onlinestore.exceptions.ResourceNotFoundException;
@@ -9,87 +10,46 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
 public class ProductController {
 
-    private final String ENTITY_NAME = "Product";
-
-    private final ProductService productService;
+    private final ProductBusinessService productBusinessService;
 
     public ProductController(ProductService productService) {
-        this.productService = productService;
+        this.productBusinessService = new ProductBusinessService(productService);
     }
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllproducts() {
-        List<Product> result= productService.findAll();
-        return ResponseEntity.ok(result);
+
+        return ResponseEntity.ok(productBusinessService.getAll());
     }
 
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product) throws BadRequestException {
-        if (product.getId() != null) {
-            String message = "Invalid  " + ENTITY_NAME + " id";
-            throw new BadRequestException(message);
-        }
-
-        Product result = productService.save(product);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(productBusinessService.create((product)));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable Long id) throws ResourceNotFoundException {
-        Optional<Product> product = productService.findOne(id);
-        if(product.isPresent()) {
-            return ResponseEntity.ok(product.get());
-        }
-        else{
-            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + id);
-        }
+        return ResponseEntity.ok(productBusinessService.getOne(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") Long id,@Valid @RequestBody  Product product) throws BadRequestException,ResourceNotFoundException,InternalError {
-        Optional<Product> searchProduct = productService.findOne(id);
-        if(searchProduct.isPresent()) {
-            product.setId(id);
-            Product result = productService.save(product);
-            return ResponseEntity.ok(result);
-        }
-        else{
-            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + product.getId());
-        }
+        return ResponseEntity.ok(productBusinessService.update(id,product));
     }
 
     @PutMapping
     public ResponseEntity<Product> updateProductById(@RequestBody  Product product) throws  BadRequestException,ResourceNotFoundException,InternalError {
-        if (product.getId() == null) {
-            String message = "Invalid  " + ENTITY_NAME + " id";
-            throw new BadRequestException(message);
-        }
-
-        Optional<Product> searchProduct = productService.findOne(product.getId());
-        if(searchProduct.isPresent()) {
-            Product result = productService.save(product);
-            return ResponseEntity.ok(result);
-        }
-        else{
-            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + product.getId());
-        }
+        return ResponseEntity.ok(productBusinessService.update(product.getId(),product));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id)  throws ResourceNotFoundException {
-        Optional<Product> searchProduct = productService.findOne(id);
-        if(searchProduct.isPresent()) {
-            productService.delete(id);
-            return ResponseEntity.noContent().build();
-        }
-        else{
-            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + id);
-        }
+        productBusinessService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
