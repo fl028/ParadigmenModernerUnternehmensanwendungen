@@ -74,6 +74,7 @@ public class ProductOrderController {
     public ResponseEntity<ProductOrder> updateProductOrder(@PathVariable(value = "id") Long id,@Valid @RequestBody  ProductOrder productorder) throws BadRequestException,ResourceNotFoundException,InternalError {
         Optional<ProductOrder> searchProductOrder = productOrderService.findOne(id);
         if(searchProductOrder.isPresent()) {
+            productorder.setId(id);
             ProductOrder result = productOrderService.save(productorder);
             return ResponseEntity.ok(result);
         }
@@ -91,8 +92,12 @@ public class ProductOrderController {
 
         Optional<ProductOrder> searchProductOrder = productOrderService.findOne(productorder.getId());
         if(searchProductOrder.isPresent()) {
-            ProductOrder result = productOrderService.save(productorder);
-            return ResponseEntity.ok(result);
+            try {
+                ProductOrder result = productOrderService.save(productorder);
+                return ResponseEntity.ok(result);
+            } catch (Exception e) {
+                throw new InternalError();
+            }
         }
         else{
             throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + productorder.getId());

@@ -1,5 +1,6 @@
 package de.esi.onlinestore.controller;
 
+import de.esi.onlinestore.domain.OrderItem;
 import de.esi.onlinestore.domain.ProductCategory;
 import de.esi.onlinestore.exceptions.BadRequestException;
 import de.esi.onlinestore.exceptions.ResourceNotFoundException;
@@ -55,6 +56,7 @@ public class ProductCategoryController {
     public ResponseEntity<ProductCategory> updateProductCategoryById(@PathVariable(value = "id") Long id,@Valid @RequestBody ProductCategory productcategory) throws ResourceNotFoundException,InternalError {
         Optional<ProductCategory> searchProductCategory = productcategoriesService.findOne(id);
         if(searchProductCategory.isPresent()) {
+            productcategory.setId(id);
             ProductCategory result = productcategoriesService.save(productcategory);
             return ResponseEntity.ok(result);
         }
@@ -72,8 +74,12 @@ public class ProductCategoryController {
 
         Optional<ProductCategory> searchProductCategory = productcategoriesService.findOne(productcategory.getId());
         if(searchProductCategory.isPresent()) {
-            ProductCategory result = productcategoriesService.save(productcategory);
-            return ResponseEntity.ok(result);
+            try {
+                ProductCategory result = productcategoriesService.save(productcategory);
+                return ResponseEntity.ok(result);
+            } catch (Exception e) {
+                throw new InternalError();
+            }
         }
         else{
             throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + productcategory.getId());

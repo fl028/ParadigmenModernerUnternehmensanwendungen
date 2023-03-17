@@ -55,6 +55,7 @@ public class ProductController {
     public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") Long id,@Valid @RequestBody  Product product) throws BadRequestException,ResourceNotFoundException,InternalError {
         Optional<Product> searchProduct = productService.findOne(id);
         if(searchProduct.isPresent()) {
+            product.setId(id);
             Product result = productService.save(product);
             return ResponseEntity.ok(result);
         }

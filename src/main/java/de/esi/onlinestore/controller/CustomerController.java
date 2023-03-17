@@ -1,6 +1,7 @@
 package de.esi.onlinestore.controller;
 
 import de.esi.onlinestore.domain.Customer;
+import de.esi.onlinestore.domain.ProductOrder;
 import de.esi.onlinestore.exceptions.BadRequestException;
 import de.esi.onlinestore.exceptions.DuplicateEmailException;
 import de.esi.onlinestore.exceptions.ResourceNotFoundException;
@@ -72,6 +73,7 @@ public class CustomerController {
     public ResponseEntity<Customer> updateCustomer(@PathVariable(value = "id") Long id,@Valid @RequestBody Customer customer) throws BadRequestException,ResourceNotFoundException,InternalError {
         Optional<Customer> searchCustomer = customerService.findOne(id);
         if(searchCustomer.isPresent()) {
+            customer.setId(id);
             Customer result = customerService.save(customer);
             return ResponseEntity.ok(result);
         }
@@ -89,8 +91,12 @@ public class CustomerController {
 
         Optional<Customer> searchCustomer = customerService.findOne(customer.getId());
         if(searchCustomer.isPresent()) {
-            Customer result = customerService.save(customer);
-            return ResponseEntity.ok(result);
+            try {
+                Customer result = customerService.save(customer);
+                return ResponseEntity.ok(result);
+            } catch (Exception e) {
+                throw new InternalError();
+            }
         }
         else{
             throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + customer.getId());

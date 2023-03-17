@@ -1,5 +1,6 @@
 package de.esi.onlinestore.controller;
 
+import de.esi.onlinestore.domain.Customer;
 import de.esi.onlinestore.domain.OrderItem;
 import de.esi.onlinestore.exceptions.BadRequestException;
 import de.esi.onlinestore.exceptions.ResourceNotFoundException;
@@ -55,6 +56,7 @@ public class OrderItemController {
     public ResponseEntity<OrderItem> updateOrderItem(@PathVariable(value = "id") Long id,@Valid @RequestBody  OrderItem orderitem) throws BadRequestException,ResourceNotFoundException,InternalError {
         Optional<OrderItem> searchOrderItem = orderItemService.findOne(id);
         if(searchOrderItem.isPresent()) {
+            orderitem.setId(id);
             OrderItem result = orderItemService.save(orderitem);
             return ResponseEntity.ok(result);
         }
@@ -72,8 +74,12 @@ public class OrderItemController {
 
         Optional<OrderItem> searchOrderItem = orderItemService.findOne(orderitem.getId());
         if(searchOrderItem.isPresent()) {
-            OrderItem result = orderItemService.save(orderitem);
-            return ResponseEntity.ok(result);
+            try {
+                OrderItem result = orderItemService.save(orderitem);
+                return ResponseEntity.ok(result);
+            } catch (Exception e) {
+                throw new InternalError();
+            }
         }
         else{
             throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + orderitem.getId());
