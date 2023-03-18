@@ -38,12 +38,12 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable(value = "id") Long id,@Valid @RequestBody Customer customer) throws BadRequestException,ResourceNotFoundException,InternalError {
+    public ResponseEntity<Customer> updateCustomer(@PathVariable(value = "id") Long id,@Valid @RequestBody Customer customer) throws BadRequestException, ResourceNotFoundException, InternalError, DuplicateEmailException {
         return ResponseEntity.ok(customerBusinessService.update(id,customer));
     }
 
     @PutMapping
-    public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer) throws  BadRequestException,ResourceNotFoundException,InternalError {
+    public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer) throws BadRequestException, ResourceNotFoundException, InternalError, DuplicateEmailException {
         return ResponseEntity.ok(customerBusinessService.update(customer.getId(),customer));
     }
 

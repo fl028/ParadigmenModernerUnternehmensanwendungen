@@ -39,12 +39,15 @@ public class CustomerBusinessService {
             throw new BadRequestException(message);
         }
 
+        checkEmail(customer);
+        return customerService.save(customer);
+    }
+
+    private void checkEmail(Customer customer) throws DuplicateEmailException {
         if (isEmailUnique(customer.getEmail()) == false){
             String message = ENTITY_NAME + " email is not unique: " + customer.getEmail();
             throw new DuplicateEmailException(message);
         }
-
-        return customerService.save(customer);
     }
 
     private boolean isEmailUnique(String email) {
@@ -57,11 +60,13 @@ public class CustomerBusinessService {
         return true;
     }
 
-    public Customer update(Long id, Customer customer) throws BadRequestException, ResourceNotFoundException {
+    public Customer update(Long id, Customer customer) throws BadRequestException, ResourceNotFoundException, DuplicateEmailException {
         if (customer.getId() == null) {
             String message = "Invalid  " + ENTITY_NAME + " id";
             throw new BadRequestException(message);
         }
+
+        checkEmail(customer);
 
         Optional<Customer> searchCustomer = customerService.findOne(id);
         if(searchCustomer.isPresent()) {
