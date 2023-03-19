@@ -27,7 +27,7 @@ public class OrderItemController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderItem> createOrderItem(@RequestBody OrderItem orderitem) throws BadRequestException {
+    public ResponseEntity<OrderItem> createOrderItem(@Valid @RequestBody OrderItem orderitem) throws BadRequestException {
         return ResponseEntity.ok(orderItemBusinessService.create(orderitem));
     }
 
@@ -37,12 +37,12 @@ public class OrderItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderItem> updateOrderItem(@PathVariable(value = "id") Long id,@Valid @RequestBody  OrderItem orderitem) throws BadRequestException,ResourceNotFoundException,InternalError {
+    public ResponseEntity<OrderItem> updateOrderItem(@Valid @PathVariable(value = "id") Long id,@Valid @RequestBody  OrderItem orderitem) throws BadRequestException,ResourceNotFoundException,InternalError {
         return ResponseEntity.ok(orderItemBusinessService.update(id,orderitem));
     }
 
     @PutMapping
-    public ResponseEntity<OrderItem> updateOrderItemById(@RequestBody OrderItem orderitem) throws  BadRequestException,ResourceNotFoundException,InternalError {
+    public ResponseEntity<OrderItem> updateOrderItemById(@Valid @RequestBody OrderItem orderitem) throws  BadRequestException,ResourceNotFoundException,InternalError {
         return ResponseEntity.ok(orderItemBusinessService.update(orderitem.getId(),orderitem));
     }
 

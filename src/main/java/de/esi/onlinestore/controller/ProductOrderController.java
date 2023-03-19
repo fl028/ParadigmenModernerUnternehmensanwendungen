@@ -31,7 +31,7 @@ public class ProductOrderController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductOrder> createProductOrder(@RequestBody ProductOrder productorder) throws BadRequestException, TotalPriceTooLowException, ResourceNotFoundException {
+    public ResponseEntity<ProductOrder> createProductOrder(@Valid @RequestBody ProductOrder productorder) throws BadRequestException, TotalPriceTooLowException, ResourceNotFoundException {
         return ResponseEntity.ok(productOrderBusinessService.create(productorder));
     }
 
@@ -46,7 +46,7 @@ public class ProductOrderController {
     }
 
     @PutMapping
-    public ResponseEntity<ProductOrder> updateProductOrderById(@RequestBody  ProductOrder productorder) throws  BadRequestException,ResourceNotFoundException,InternalError {
+    public ResponseEntity<ProductOrder> updateProductOrderById(@Valid @RequestBody  ProductOrder productorder) throws  BadRequestException,ResourceNotFoundException,InternalError {
         return ResponseEntity.ok(productOrderBusinessService.update(productorder.getId(),productorder));
     }
 

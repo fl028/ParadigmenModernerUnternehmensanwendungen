@@ -28,7 +28,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) throws BadRequestException, DuplicateEmailException {
+    public ResponseEntity<Customer> createCustomer(@Valid @RequestBody Customer customer) throws BadRequestException, DuplicateEmailException {
         return ResponseEntity.ok(customerBusinessService.create(customer));
     }
 
@@ -43,7 +43,7 @@ public class CustomerController {
     }
 
     @PutMapping
-    public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer) throws BadRequestException, ResourceNotFoundException, InternalError, DuplicateEmailException {
+    public ResponseEntity<Customer> updateCustomer(@Valid @RequestBody Customer customer) throws BadRequestException, ResourceNotFoundException, InternalError, DuplicateEmailException {
         return ResponseEntity.ok(customerBusinessService.update(customer.getId(),customer));
     }
 

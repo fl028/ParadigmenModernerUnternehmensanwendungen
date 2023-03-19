@@ -35,7 +35,7 @@ public class ProductCategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductCategory> createProductCategory(@RequestBody ProductCategory productcategory) throws BadRequestException, ResourceNotFoundException {
+    public ResponseEntity<ProductCategory> createProductCategory(@Valid @RequestBody ProductCategory productcategory) throws BadRequestException, ResourceNotFoundException {
         return ResponseEntity.ok(productCategoryBusinessService.create(productcategory));
     }
 
@@ -50,7 +50,7 @@ public class ProductCategoryController {
     }
 
     @PutMapping
-    public ResponseEntity<ProductCategory> updateProductCategory(@RequestBody ProductCategory productcategory) throws  BadRequestException,ResourceNotFoundException,InternalError {
+    public ResponseEntity<ProductCategory> updateProductCategory(@Valid @RequestBody ProductCategory productcategory) throws  BadRequestException,ResourceNotFoundException,InternalError {
         return ResponseEntity.ok(productCategoryBusinessService.update(productcategory.getId(),productcategory));
     }
 

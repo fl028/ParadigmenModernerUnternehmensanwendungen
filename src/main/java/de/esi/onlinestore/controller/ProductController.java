@@ -28,7 +28,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) throws BadRequestException {
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) throws BadRequestException {
         return ResponseEntity.ok(productBusinessService.create((product)));
     }
 
@@ -43,7 +43,7 @@ public class ProductController {
     }
 
     @PutMapping
-    public ResponseEntity<Product> updateProductById(@RequestBody  Product product) throws  BadRequestException,ResourceNotFoundException,InternalError {
+    public ResponseEntity<Product> updateProductById(@Valid @RequestBody  Product product) throws  BadRequestException,ResourceNotFoundException,InternalError {
         return ResponseEntity.ok(productBusinessService.update(product.getId(),product));
     }
 
