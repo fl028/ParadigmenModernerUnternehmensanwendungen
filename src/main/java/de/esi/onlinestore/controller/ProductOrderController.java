@@ -1,11 +1,14 @@
 package de.esi.onlinestore.controller;
 
+import de.esi.onlinestore.businesslogic.CustomerBusinessService;
 import de.esi.onlinestore.businesslogic.OrderItemBusinessService;
 import de.esi.onlinestore.businesslogic.ProductOrderBusinessService;
 import de.esi.onlinestore.domain.ProductOrder;
 import de.esi.onlinestore.exceptions.BadRequestException;
+import de.esi.onlinestore.exceptions.DuplicateEmailException;
 import de.esi.onlinestore.exceptions.ResourceNotFoundException;
 import de.esi.onlinestore.exceptions.TotalPriceTooLowException;
+import de.esi.onlinestore.service.CustomerService;
 import de.esi.onlinestore.service.OrderItemService;
 import de.esi.onlinestore.service.ProductOrderService;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +23,8 @@ public class ProductOrderController {
 
     private final ProductOrderBusinessService productOrderBusinessService;
 
-    public ProductOrderController(ProductOrderService productOrderService, OrderItemService orderItemService) {
-        this.productOrderBusinessService = new ProductOrderBusinessService(productOrderService,new OrderItemBusinessService(orderItemService));
+    public ProductOrderController(ProductOrderService productOrderService, OrderItemService orderItemService, CustomerService customerService) {
+        this.productOrderBusinessService = new ProductOrderBusinessService(productOrderService,new OrderItemBusinessService(orderItemService),new CustomerBusinessService(customerService));
     }
 
 
@@ -31,7 +34,7 @@ public class ProductOrderController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductOrder> createProductOrder(@Valid @RequestBody ProductOrder productorder) throws BadRequestException, TotalPriceTooLowException, ResourceNotFoundException {
+    public ResponseEntity<ProductOrder> createProductOrder(@Valid @RequestBody ProductOrder productorder) throws BadRequestException, TotalPriceTooLowException, ResourceNotFoundException, DuplicateEmailException {
         return ResponseEntity.ok(productOrderBusinessService.create(productorder));
     }
 
@@ -41,12 +44,12 @@ public class ProductOrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductOrder> updateProductOrder(@PathVariable(value = "id") Long id,@Valid @RequestBody  ProductOrder productorder) throws BadRequestException,ResourceNotFoundException,InternalError {
+    public ResponseEntity<ProductOrder> updateProductOrder(@PathVariable(value = "id") Long id,@Valid @RequestBody  ProductOrder productorder) throws BadRequestException, ResourceNotFoundException, InternalError, DuplicateEmailException {
         return ResponseEntity.ok(productOrderBusinessService.update(id,productorder));
     }
 
     @PutMapping
-    public ResponseEntity<ProductOrder> updateProductOrderById(@Valid @RequestBody  ProductOrder productorder) throws  BadRequestException,ResourceNotFoundException,InternalError {
+    public ResponseEntity<ProductOrder> updateProductOrderById(@Valid @RequestBody  ProductOrder productorder) throws BadRequestException, ResourceNotFoundException, InternalError, DuplicateEmailException {
         return ResponseEntity.ok(productOrderBusinessService.update(productorder.getId(),productorder));
     }
 

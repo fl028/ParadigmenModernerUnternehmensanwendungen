@@ -1,13 +1,13 @@
 package de.esi.onlinestore.businesslogic;
 
+import de.esi.onlinestore.domain.Customer;
 import de.esi.onlinestore.domain.OrderItem;
-import de.esi.onlinestore.domain.Product;
 import de.esi.onlinestore.domain.ProductOrder;
 import de.esi.onlinestore.exceptions.BadRequestException;
+import de.esi.onlinestore.exceptions.DuplicateEmailException;
 import de.esi.onlinestore.exceptions.ResourceNotFoundException;
 import de.esi.onlinestore.exceptions.TotalPriceTooLowException;
 import de.esi.onlinestore.service.ProductOrderService;
-import org.hibernate.criterion.Order;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,9 +20,12 @@ public class ProductOrderBusinessService {
 
     private final OrderItemBusinessService orderItemBusinessService;
 
-    public ProductOrderBusinessService(ProductOrderService productOrderService,OrderItemBusinessService orderItemBusinessService) {
+    private final CustomerBusinessService customerBusinessService;
+
+    public ProductOrderBusinessService(ProductOrderService productOrderService,OrderItemBusinessService orderItemBusinessService,CustomerBusinessService customerBusinessService) {
         this.productOrderService = productOrderService;
         this.orderItemBusinessService = orderItemBusinessService;
+        this.customerBusinessService = customerBusinessService;
     }
 
     public List<ProductOrder> getAll() {
@@ -39,7 +42,7 @@ public class ProductOrderBusinessService {
         }
     }
 
-    public ProductOrder create(ProductOrder productorder) throws BadRequestException, TotalPriceTooLowException, ResourceNotFoundException {
+    public ProductOrder create(ProductOrder productorder) throws BadRequestException, TotalPriceTooLowException, ResourceNotFoundException, DuplicateEmailException {
 
         if (productorder.getId() != null) {
             String message = "Invalid  " + ENTITY_NAME + " id";
@@ -51,6 +54,23 @@ public class ProductOrderBusinessService {
             throw new BadRequestException(message);
         }
 
+        checkBasketValue(productorder);
+        updateCustomer(productorder);
+        ProductOrder productOrder = productOrderService.save(productorder);
+        updateOrderItems(productorder);
+
+        return productOrder;
+    }
+
+    private void updateCustomer(ProductOrder productorder) throws DuplicateEmailException, BadRequestException, ResourceNotFoundException {
+        Optional<Customer> searchCustomer = Optional.ofNullable(productorder.getCustomer());
+        if(searchCustomer.isPresent()) {
+            customerBusinessService.update(searchCustomer.get().getId(), searchCustomer.get() );
+        }
+
+    }
+
+    private void checkBasketValue(ProductOrder productorder) throws TotalPriceTooLowException {
         //calculate total price of product order
         float productOrderTotalPrice = 0;
         for (OrderItem orderItem : productorder.getOrderItems()) {
@@ -59,17 +79,12 @@ public class ProductOrderBusinessService {
 
         //check basket value
         if(productOrderTotalPrice < 100){
-            String message = "The " + ENTITY_NAME + "  requires a order value of 100 but current value is "+ Float.toString(productOrderTotalPrice) +": " + ENTITY_NAME;
+            String message = "The " + ENTITY_NAME + " requires a order value of 100 but current value is "+ Float.toString(productOrderTotalPrice);
             throw new TotalPriceTooLowException(message);
         }
-
-        ProductOrder productOrder = productOrderService.save(productorder);
-        setOrder(productorder, orderItemBusinessService);
-
-        return productOrder;
     }
 
-    public ProductOrder update(Long id, ProductOrder productorder) throws BadRequestException, ResourceNotFoundException {
+    public ProductOrder update(Long id, ProductOrder productorder) throws BadRequestException, ResourceNotFoundException, DuplicateEmailException {
         if (productorder.getId() == null) {
             String message = "Invalid  " + ENTITY_NAME + " id";
             throw new BadRequestException(message);
@@ -78,8 +93,9 @@ public class ProductOrderBusinessService {
         Optional<ProductOrder> searchProductOrder = productOrderService.findOne(id);
         if(searchProductOrder.isPresent()) {
             productorder.setId(id);
+            updateCustomer(productorder);
             ProductOrder productOrder = productOrderService.save(productorder);
-            setOrder(productorder, orderItemBusinessService);
+            updateOrderItems(productorder);
             return productOrder;
         }
         else{
@@ -87,7 +103,7 @@ public class ProductOrderBusinessService {
         }
     }
 
-    private void setOrder(ProductOrder productorder, OrderItemBusinessService orderItemBusinessService) throws BadRequestException, ResourceNotFoundException {
+    private void updateOrderItems(ProductOrder productorder) throws BadRequestException, ResourceNotFoundException {
         for (OrderItem orderItem : productorder.getOrderItems()) {
             orderItem.setOrder(productorder);
             orderItemBusinessService.update(orderItem.getId(),orderItem);

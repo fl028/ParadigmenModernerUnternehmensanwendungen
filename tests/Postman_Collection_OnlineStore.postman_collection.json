@@ -1235,7 +1235,7 @@
 					"response": []
 				},
 				{
-					"name": "3 - POST /productorders-> 200 (with orderitemOne)",
+					"name": "3 - POST /productorders-> 200 (with orderitemOne no Customer)",
 					"event": [
 						{
 							"listen": "test",
@@ -1246,7 +1246,9 @@
 									"\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
-									"});"
+									"});\r",
+									"\r",
+									"pm.globals.set(\"productOrderOneId\", jsonData[\"id\"]);"
 								],
 								"type": "text/javascript"
 							}
@@ -1339,7 +1341,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/productorders/1",
+							"raw": "http://localhost:8080/productorders/{{productOrderOneId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1347,7 +1349,7 @@
 							"port": "8080",
 							"path": [
 								"productorders",
-								"1"
+								"{{productOrderOneId}}"
 							]
 						}
 					},
@@ -1565,7 +1567,284 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"placedDate\": \"2000-01-23T04:56:07.000+00:00\",\r\n    \"orderItems\": [\r\n        {{orderitemOneJson}}\r\n    ],\r\n    \"status\": \"CANCELLED\"\r\n}",
+							"raw": "{\r\n    \"id\": {{productOrderOneId}},\r\n    \"placedDate\": \"2000-01-23T04:56:07.000+00:00\",\r\n    \"orderItems\": [\r\n        {{orderitemOneJson}}\r\n    ],\r\n    \"status\": \"CANCELLED\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/productorders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"productorders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8 - PUT /productorders-> 404 (with customer that does not exists)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData);\r",
+									"\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const orderitemOneID = pm.variables.get(\"orderitemOneId\").toString();\r",
+									"console.log(\"orderitemOneID \" + orderitemOneID);\r",
+									"const apiurl_one = 'http://localhost:8080/orderitems/' + orderitemOneID\r",
+									"console.log(\"apiurl_one \" + apiurl_one);\r",
+									"pm.sendRequest({\r",
+									"    url: apiurl_one,\r",
+									"    method: 'GET'\r",
+									"}, (err, res) => {\r",
+									"    if (err) {\r",
+									"        console.error(err);\r",
+									"    } else {\r",
+									"        if (res.code == 200) {\r",
+									"            const responseBody = res.json();\r",
+									"            const json = JSON.stringify(responseBody)\r",
+									"            console.debug(json);\r",
+									"            pm.environment.set('orderitemOneJson', json);\r",
+									"        } else {\r",
+									"            console.error(\"error\");\r",
+									"        }\r",
+									"    }\r",
+									"});\r",
+									"console.log(pm.variables.get(\"orderitemOneJson\"));\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{productOrderOneId}},\r\n    \"placedDate\": \"2000-01-23T04:56:07.000+00:00\",\r\n    \"orderItems\": [\r\n        {{orderitemOneJson}}\r\n    ],\r\n    \"status\": \"CANCELLED\",\r\n    \"customer\": {\r\n        \"firstName\": \"firstName1\",\r\n        \"lastName\": \"lastName1\",\r\n        \"id\": 0,\r\n        \"email\": \"email1\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/productorders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"productorders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8 - PUT /productorders-> 400 (invalid id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData);\r",
+									"\r",
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const orderitemOneID = pm.variables.get(\"orderitemOneId\").toString();\r",
+									"console.log(\"orderitemOneID \" + orderitemOneID);\r",
+									"const apiurl_one = 'http://localhost:8080/orderitems/' + orderitemOneID\r",
+									"console.log(\"apiurl_one \" + apiurl_one);\r",
+									"pm.sendRequest({\r",
+									"    url: apiurl_one,\r",
+									"    method: 'GET'\r",
+									"}, (err, res) => {\r",
+									"    if (err) {\r",
+									"        console.error(err);\r",
+									"    } else {\r",
+									"        if (res.code == 200) {\r",
+									"            const responseBody = res.json();\r",
+									"            const json = JSON.stringify(responseBody)\r",
+									"            console.debug(json);\r",
+									"            pm.environment.set('orderitemOneJson', json);\r",
+									"        } else {\r",
+									"            console.error(\"error\");\r",
+									"        }\r",
+									"    }\r",
+									"});\r",
+									"console.log(pm.variables.get(\"orderitemOneJson\"));\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{productOrderOneId}},\r\n    \"placedDate\": \"2000-01-23T04:56:07.000+00:00\",\r\n    \"orderItems\": [\r\n        {{orderitemOneJson}}\r\n    ],\r\n    \"status\": \"CANCELLED\",\r\n    \"customer\": {\r\n        \"firstName\": \"firstName1\",\r\n        \"lastName\": \"lastName1\",\r\n        \"id\": null,\r\n        \"email\": \"email1\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/productorders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"productorders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8 - PUT /productorders-> 200 (add CustomerOne to OrderOne)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const orderitemOneID = pm.variables.get(\"orderitemOneId\").toString();\r",
+									"console.log(\"orderitemOneID \" + orderitemOneID);\r",
+									"const apiurl_one = 'http://localhost:8080/orderitems/' + orderitemOneID\r",
+									"console.log(\"apiurl_one \" + apiurl_one);\r",
+									"pm.sendRequest({\r",
+									"    url: apiurl_one,\r",
+									"    method: 'GET'\r",
+									"}, (err, res) => {\r",
+									"    if (err) {\r",
+									"        console.error(err);\r",
+									"    } else {\r",
+									"        if (res.code == 200) {\r",
+									"            const responseBody = res.json();\r",
+									"            const json = JSON.stringify(responseBody)\r",
+									"            console.debug(json);\r",
+									"            pm.environment.set('orderitemOneJson', json);\r",
+									"        } else {\r",
+									"            console.error(\"error\");\r",
+									"        }\r",
+									"    }\r",
+									"});\r",
+									"console.log(pm.variables.get(\"orderitemOneJson\"));\r",
+									"\r",
+									"//new customer\r",
+									"const apiurl_customer_three = 'http://localhost:8080/customers'\r",
+									"pm.sendRequest({\r",
+									"    url: apiurl_customer_three,\r",
+									"    method: 'POST',\r",
+									"    header: {\"Content-Type\": \"application/json\"},\r",
+									"    body: { \r",
+									"        mode: 'raw',\r",
+									"        raw:JSON.stringify({ \"firstName\": \"customerThree\",\r",
+									"            \"lastName\": \"customerThree\",\r",
+									"            \"id\": null,\r",
+									"            \"email\": \"customerThree\"})  \r",
+									"    }\r",
+									"}, (err, res) => {\r",
+									"    if (err) {\r",
+									"        console.error(err);\r",
+									"    } else {\r",
+									"        if (res.code == 200) {\r",
+									"            const responseBody = res.json();\r",
+									"            const customerThreeId = responseBody[\"id\"]\r",
+									"            pm.environment.set('customerThreeId', customerThreeId);\r",
+									"            console.log(\"customerThreeId \" + pm.variables.get(\"customerThreeId\"));\r",
+									"        } else {\r",
+									"            console.error(\"error\");\r",
+									"        }\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{productOrderOneId}},\r\n    \"placedDate\": \"2000-01-23T04:56:07.000+00:00\",\r\n    \"orderItems\": [\r\n        {{orderitemOneJson}}\r\n    ],\r\n    \"status\": \"CANCELLED\",\r\n    \"customer\": {\r\n        \"firstName\": \"firstName1\",\r\n        \"lastName\": \"firstName1\",\r\n        \"id\": {{customerThreeId}},\r\n        \"email\": \"firstName1\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1656,7 +1935,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/productorders/1",
+							"raw": "http://localhost:8080/productorders/{{productOrderOneId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1664,7 +1943,7 @@
 							"port": "8080",
 							"path": [
 								"productorders",
-								"1"
+								"{{productOrderOneId}}"
 							]
 						}
 					},
@@ -1869,7 +2148,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/productorders/1",
+							"raw": "http://localhost:8080/productorders/{{productOrderOneId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1877,7 +2156,7 @@
 							"port": "8080",
 							"path": [
 								"productorders",
-								"1"
+								"{{productOrderOneId}}"
 							]
 						}
 					},
@@ -2543,7 +2822,7 @@
 					"response": []
 				},
 				{
-					"name": "3 - POST /customers -> 200",
+					"name": "3 - POST /customers -> 200 (CustomerOne))",
 					"event": [
 						{
 							"listen": "test",
@@ -2554,7 +2833,9 @@
 									"\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
-									"});"
+									"});\r",
+									"\r",
+									"pm.globals.set(\"customerOneId\", jsonData[\"id\"]);"
 								],
 								"type": "text/javascript"
 							}
@@ -2571,7 +2852,59 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"firstName\" : \"firstName1\", \"lastName\" : \"lastName1\", \"id\" : null, \"email\" : \"email1\"}",
+							"raw": "{\r\n    \"firstName\": \"customerOne\",\r\n    \"lastName\": \"customerOne\",\r\n    \"id\": null,\r\n    \"email\": \"customerOne\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3 - POST /customers -> 200 (CustomerTwo)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.globals.set(\"customerTwoId\", jsonData[\"id\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"firstName\" : \"customerTwo\", \"lastName\" : \"customerTwo\", \"id\" : null, \"email\" : \"customerTwo\"}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2614,7 +2947,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/customers/1",
+							"raw": "http://localhost:8080/customers/{{customerOneId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -2622,7 +2955,7 @@
 							"port": "8080",
 							"path": [
 								"customers",
-								"1"
+								"{{customerOneId}}"
 							]
 						}
 					},
@@ -2707,7 +3040,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"firstName\" : \"firstName1\", \"lastName\" : \"lastName1\", \"id\" : null, \"email\" : \"email1\"}",
+							"raw": "{\r\n    \"firstName\": \"customerOne\",\r\n    \"lastName\": \"customerOne\",\r\n    \"id\": null,\r\n    \"email\": \"customerOne\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2729,7 +3062,7 @@
 					"response": []
 				},
 				{
-					"name": "7 - PUT /customers -> 200",
+					"name": "7 - PUT /customers -> 200 (Customer one Name change)",
 					"event": [
 						{
 							"listen": "test",
@@ -2757,7 +3090,107 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"firstName\" : \"firstName1\", \"lastName\" : \"lastName1\", \"id\" : 1, \"email\" : \"new_email1\"}",
+							"raw": "{\r\n    \"firstName\": \"customerOnecustomerOne\",\r\n    \"lastName\": \"customerOnecustomerOne\",\r\n    \"id\": {{customerOneId}},\r\n    \"email\": \"customerOne\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7 - PUT /customers -> 400 (Customer one email change)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData);\r",
+									"\r",
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"customerOne\",\r\n    \"lastName\": \"customerOne\",\r\n    \"id\": {{customerOneId}},\r\n    \"email\": \"customerTwo\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7 - PUT /customers -> 200 (Customer one email change)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"console.log(jsonData);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"customerOne\",\r\n    \"lastName\": \"customerOne\",\r\n    \"id\": {{customerOneId}},\r\n    \"email\": \"customerOnecustomerOnecustomerOnecustomerOne\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2807,7 +3240,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"firstName\" : \"firstName1\", \"lastName\" : \"lastName1\", \"id\" : 1, \"email\" : \"new_new_email1\"}",
+							"raw": "{\r\n    \"firstName\": \"customerOnecustomerOne\",\r\n    \"lastName\": \"customerOnecustomerOne\",\r\n    \"id\": 1,\r\n    \"email\": \"customerOnecustomerOne\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2815,7 +3248,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/customers/1",
+							"raw": "http://localhost:8080/customers/{{customerOneId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -2823,7 +3256,7 @@
 							"port": "8080",
 							"path": [
 								"customers",
-								"1"
+								"{{customerOneId}}"
 							]
 						}
 					},
@@ -2908,7 +3341,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"firstName\" : \"firstName1\", \"lastName\" : \"lastName1\", \"id\" : 0, \"email\" : \"new_email1\"}",
+							"raw": "{\r\n    \"firstName\": \"customerOnecustomerOne\",\r\n    \"lastName\": \"customerOnecustomerOne\",\r\n    \"id\": 0,\r\n    \"email\": \"customerOnecustomerOne\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2959,7 +3392,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"firstName\" : \"firstName1\", \"lastName\" : \"lastName1\", \"id\" : 0, \"email\" : \"new_email1\"}",
+							"raw": "{\r\n    \"firstName\": \"customerOnecustomerOne\",\r\n    \"lastName\": \"customerOnecustomerOne\",\r\n    \"id\": 0,\r\n    \"email\": \"customerOnecustomerOne\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2999,7 +3432,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/customers/1",
+							"raw": "http://localhost:8080/customers/{{customerOneId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -3007,7 +3440,7 @@
 							"port": "8080",
 							"path": [
 								"customers",
-								"1"
+								"{{customerOneId}}"
 							]
 						}
 					},

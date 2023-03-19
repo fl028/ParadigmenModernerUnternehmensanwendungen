@@ -44,19 +44,33 @@ public class CustomerBusinessService {
     }
 
     private void checkEmail(Customer customer) throws DuplicateEmailException {
-        if (isEmailUnique(customer.getEmail()) == false){
+        if (isEmailUnique(customer.getId(),customer.getEmail()) == false){
             String message = ENTITY_NAME + " email is not unique: " + customer.getEmail();
             throw new DuplicateEmailException(message);
         }
     }
 
-    private boolean isEmailUnique(String email) {
+    private boolean isEmailUnique(Long id,String email) {
         List<Customer> customers = customerService.findAll();
         for (Customer customer : customers) {
-            if (customer.getEmail().equals(email)) {
+            // email is not unique when it appears in another customer
+            if (customer.getEmail().equals(email) && checkIdIsNotQual(id,customer.getId())) {
                 return false;
             }
         }
+        return true;
+    }
+
+    private boolean checkIdIsNotQual(Long newCustomerId, Long existingCustomerId) {
+
+        if(newCustomerId == null){
+            return true;
+        }
+
+        if(newCustomerId.equals(existingCustomerId)){
+            return false;
+        }
+
         return true;
     }
 
@@ -66,11 +80,10 @@ public class CustomerBusinessService {
             throw new BadRequestException(message);
         }
 
-        checkEmail(customer);
-
         Optional<Customer> searchCustomer = customerService.findOne(id);
         if(searchCustomer.isPresent()) {
             customer.setId(id);
+            checkEmail(customer);
             return customerService.save(customer);
         }
         else{
