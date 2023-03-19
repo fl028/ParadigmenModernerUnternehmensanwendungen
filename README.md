@@ -13,7 +13,7 @@
 - ProductOrder
 
 ## tests
-- the api tests were realised with a postman collection
+- the api tests realised with a postman collection
 
 ## database
 - use local h2 db 
