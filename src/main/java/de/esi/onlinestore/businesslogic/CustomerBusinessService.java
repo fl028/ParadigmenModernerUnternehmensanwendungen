@@ -54,23 +54,20 @@ public class CustomerBusinessService {
         List<Customer> customers = customerService.findAll();
         for (Customer customer : customers) {
             // email is not unique when it appears in another customer
-            if (customer.getEmail().equals(email) && checkIdIsNotQual(id,customer.getId())) {
+            if (customer.getEmail().equals(email) && checkIdIsNotEqual(id,customer.getId())) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean checkIdIsNotQual(Long newCustomerId, Long existingCustomerId) {
-
+    private boolean checkIdIsNotEqual(Long newCustomerId, Long existingCustomerId) {
         if(newCustomerId == null){
             return true;
         }
-
         if(newCustomerId.equals(existingCustomerId)){
             return false;
         }
-
         return true;
     }
 

@@ -42,13 +42,11 @@ public class ProductCategoryBusinessService {
             String message = "Invalid  " + ENTITY_NAME + " id";
             throw new BadRequestException(message);
         }
-
-        setCategory(productCategory, productBusinessService);
-
+        setCategoryForProducts(productCategory);
         return productCategoryService.save(productCategory);
     }
 
-    private void setCategory(ProductCategory productCategory, ProductBusinessService productBusinessService) throws BadRequestException, ResourceNotFoundException {
+    private void setCategoryForProducts(ProductCategory productCategory) throws BadRequestException, ResourceNotFoundException {
         for (Product product : productCategory.getProducts()) {
             product.setProductCategory(productCategory);
             productBusinessService.update(product.getId(),product);
@@ -64,9 +62,7 @@ public class ProductCategoryBusinessService {
         Optional<ProductCategory> searchProductCategory = productCategoryService.findOne(id);
         if(searchProductCategory.isPresent()) {
             productCategory.setId(id);
-
-            setCategory(productCategory, productBusinessService);
-
+            setCategoryForProducts(productCategory);
             return productCategoryService.save(productCategory);
         }
         else{
