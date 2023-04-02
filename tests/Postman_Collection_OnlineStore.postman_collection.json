@@ -245,7 +245,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"image\" : [ \"\", \"\" ], \"size\" : \"S\", \"price\" : 0.6027456, \"imageContentType\" : \"imageContentType\", \"name\" : \"new_name\", \"description\" : \"description\", \"id\" : 1}",
+							"raw": "{\r\n    \"image\": [\r\n        \"\",\r\n        \"\"\r\n    ],\r\n    \"size\": \"S\",\r\n    \"price\": 0.6027456,\r\n    \"imageContentType\": \"imageContentType\",\r\n    \"name\": \"new_name\",\r\n    \"description\": \"description\",\r\n    \"id\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -295,7 +295,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"image\" : [ \"\", \"\" ], \"size\" : \"S\", \"price\" : 0.6027456, \"imageContentType\" : \"imageContentType\", \"name\" : \"new_newname\", \"description\" : \"description\", \"id\" : 1}",
+							"raw": "{\r\n    \"image\": [\r\n        \"\",\r\n        \"\"\r\n    ],\r\n    \"size\": \"S\",\r\n    \"price\": 0.6027456,\r\n    \"imageContentType\": \"imageContentType\",\r\n    \"name\": \"new_newname\",\r\n    \"description\": \"description\",\r\n    \"id\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -899,7 +899,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"quantity\": 2,\r\n    \"totalPrice\": 5.962134,\r\n    \"id\": {{orderitemTwoId}},\r\n    \"status\": \"AVAILABLE\"\r\n}",
+							"raw": "{\r\n    \"quantity\": 2,\r\n    \"totalPrice\": 5.962134,\r\n    \"id\": null,\r\n    \"status\": \"AVAILABLE\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1589,7 +1589,7 @@
 					"response": []
 				},
 				{
-					"name": "8 - PUT /productorders-> 404 (with customer that does not exists)",
+					"name": "8 - PUT /productorders-> 200 (with customer null)",
 					"event": [
 						{
 							"listen": "test",
@@ -1598,8 +1598,8 @@
 									"var jsonData = JSON.parse(responseBody);\r",
 									"console.log(jsonData);\r",
 									"\r",
-									"pm.test(\"Status code is 404\", function () {\r",
-									"    pm.response.to.have.status(404);\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1650,7 +1650,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": {{productOrderOneId}},\r\n    \"placedDate\": \"2000-01-23T04:56:07.000+00:00\",\r\n    \"orderItems\": [\r\n        {{orderitemOneJson}}\r\n    ],\r\n    \"status\": \"CANCELLED\",\r\n    \"customer\": {\r\n        \"firstName\": \"firstName1\",\r\n        \"lastName\": \"lastName1\",\r\n        \"id\": 0,\r\n        \"email\": \"email1\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"id\": {{productOrderOneId}},\r\n    \"placedDate\": \"2000-01-23T04:56:07.000+00:00\",\r\n    \"orderItems\": [\r\n        {{orderitemOneJson}}\r\n    ],\r\n    \"status\": \"CANCELLED\",\r\n    \"customer\": null\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2536,7 +2536,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"name\" : \"name\", \"description\" : \"new_description\", \"id\" : 1, \"products\" : []}",
+							"raw": "{\r\n    \"name\": \"name\",\r\n    \"description\": \"new_description\",\r\n    \"id\": 1,\r\n    \"products\": []\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

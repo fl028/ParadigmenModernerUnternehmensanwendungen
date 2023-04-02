@@ -72,7 +72,7 @@ public class CustomerBusinessService {
     }
 
     public Customer update(Long id, Customer customer) throws BadRequestException, ResourceNotFoundException, DuplicateEmailException {
-        if (customer.getId() == null) {
+        if (id == null) {
             String message = "Invalid  " + ENTITY_NAME + " id";
             throw new BadRequestException(message);
         }
@@ -84,7 +84,7 @@ public class CustomerBusinessService {
             return customerService.save(customer);
         }
         else{
-            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + customer.getId());
+            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + id);
         }
     }
 

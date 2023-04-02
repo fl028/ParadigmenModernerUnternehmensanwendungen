@@ -85,7 +85,7 @@ public class ProductOrderBusinessService {
     }
 
     public ProductOrder update(Long id, ProductOrder productorder) throws BadRequestException, ResourceNotFoundException, DuplicateEmailException {
-        if (productorder.getId() == null) {
+        if (id == null) {
             String message = "Invalid  " + ENTITY_NAME + " id";
             throw new BadRequestException(message);
         }
@@ -99,14 +99,16 @@ public class ProductOrderBusinessService {
             return productOrder;
         }
         else{
-            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + productorder.getId());
+            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + id);
         }
     }
 
     private void updateOrderItems(ProductOrder productorder) throws BadRequestException, ResourceNotFoundException {
-        for (OrderItem orderItem : productorder.getOrderItems()) {
-            orderItem.setOrder(productorder);
-            orderItemBusinessService.update(orderItem.getId(),orderItem);
+        if(productorder.getOrderItems() != null) {
+            for (OrderItem orderItem : productorder.getOrderItems()) {
+                orderItem.setOrder(productorder);
+                orderItemBusinessService.update(orderItem.getId(),orderItem);
+            }
         }
     }
 

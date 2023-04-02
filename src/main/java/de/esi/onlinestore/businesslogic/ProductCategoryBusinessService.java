@@ -47,14 +47,16 @@ public class ProductCategoryBusinessService {
     }
 
     private void setCategoryForProducts(ProductCategory productCategory) throws BadRequestException, ResourceNotFoundException {
-        for (Product product : productCategory.getProducts()) {
-            product.setProductCategory(productCategory);
-            productBusinessService.update(product.getId(),product);
+        if (productCategory != null){
+            for (Product product : productCategory.getProducts()) {
+                product.setProductCategory(productCategory);
+                productBusinessService.update(product.getId(),product);
+            }
         }
     }
 
     public ProductCategory update(Long id, ProductCategory productCategory) throws BadRequestException, ResourceNotFoundException {
-        if (productCategory.getId() == null) {
+        if (id == null) {
             String message = "Invalid  " + ENTITY_NAME + " id";
             throw new BadRequestException(message);
         }
@@ -66,7 +68,7 @@ public class ProductCategoryBusinessService {
             return productCategoryService.save(productCategory);
         }
         else{
-            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + productCategory.getId());
+            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + id);
         }
     }
 

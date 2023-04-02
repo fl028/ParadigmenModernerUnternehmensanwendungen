@@ -43,7 +43,7 @@ public class ProductBusinessService {
     }
 
     public Product update(Long id, Product product) throws BadRequestException, ResourceNotFoundException {
-        if (product.getId() == null) {
+        if (id == null) {
             String message = "Invalid  " + ENTITY_NAME + " id";
             throw new BadRequestException(message);
         }
@@ -54,7 +54,7 @@ public class ProductBusinessService {
             return  productService.save(product);
         }
         else{
-            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + product.getId());
+            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + id);
         }
     }
 

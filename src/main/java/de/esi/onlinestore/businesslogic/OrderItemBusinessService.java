@@ -43,7 +43,7 @@ public class OrderItemBusinessService {
     }
 
     public OrderItem update(Long id, OrderItem orderItem) throws BadRequestException, ResourceNotFoundException {
-        if (orderItem.getId() == null) {
+        if (id == null) {
             String message = "Invalid  " + ENTITY_NAME + " id";
             throw new BadRequestException(message);
         }
@@ -54,7 +54,7 @@ public class OrderItemBusinessService {
             return  orderItemService.save(orderItem);
         }
         else{
-            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + orderItem.getId());
+            throw new ResourceNotFoundException("No " + ENTITY_NAME + " with id: " + id);
         }
     }
 
