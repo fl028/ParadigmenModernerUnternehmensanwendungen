@@ -4,6 +4,7 @@
 ## online store 
 - Java Spring Boot REST API
 - http://localhost:8080/entity
+- swagger doc: http://localhost:8080/swagger-ui/index.html
 
 ## entities
 - Customer
